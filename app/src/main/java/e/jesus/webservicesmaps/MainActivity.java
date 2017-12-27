@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -36,17 +37,43 @@ public class MainActivity extends AppCompatActivity {
     ListView listaPuntos;
     Button irAgregar;
     Spinner hashTagspinner;
+    String[] hashtag = {"#bache", "#semaforomal", "#fugadeagua", "#inseguridad"};
+    ArrayAdapter adapter;
+    String elegido = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        hashTagspinner = findViewById(R.id.busquedaHashTagSpinner);
         puntos = new ArrayList<>();
         listaPuntos = findViewById(R.id.listaPuntosLV);
 
         irAgregar = findViewById(R.id.nuevaVentanaAgregarPuntoButton);
+        irAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AgregarPunto.class);
+                startActivity(intent);
+            }
+        });
+
+        adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, hashtag);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        hashTagspinner.setAdapter(adapter);
+        hashTagspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                elegido = hashtag[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                elegido = hashtag[0];
+            }
+        });
 
 
 

@@ -10,11 +10,11 @@ import java.io.Serializable;
 
 public class Punto implements Serializable {
 
-    String hashTag;
-    String comentario;
-    String latitud;
-    String longitud;
-    String distancia;
+    private String hashTag;
+    private String comentario;
+    private String latitud;
+    private String longitud;
+    private String distancia;
 
     public Punto(String hashTag, String comentario, String latitud, String longitud, String distancia) {
         this.hashTag = hashTag;
