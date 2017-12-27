@@ -2,11 +2,13 @@ package e.jesus.webservicesmaps;
 
 import android.widget.Spinner;
 
+import java.io.Serializable;
+
 /**
  * Created by Jesus on 26/12/2017.
  */
 
-public class Punto {
+public class Punto implements Serializable {
 
     String hashTag;
     String comentario;

@@ -1,5 +1,6 @@
 package e.jesus.webservicesmaps;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Punto> puntos;
     ListView listaPuntos;
     Button irAgregar;
+    Spinner hashTagspinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         listaPuntos = findViewById(R.id.listaPuntosLV);
 
         irAgregar = findViewById(R.id.nuevaVentanaAgregarPuntoButton);
+
 
 
     }
@@ -111,14 +115,24 @@ public class MainActivity extends AppCompatActivity {
             TextView latitud = row.findViewById(R.id.latitudWETV);
             TextView longitud = row.findViewById(R.id.longitudWSTV);
             TextView distancia = row.findViewById(R.id.distanciaWSTV);
+            Button alMapa = row.findViewById(R.id.verEnMapaUnSoloPuntoButton);
 
-            Punto puntoActual = puntos.get(position);
+            final Punto puntoActual = puntos.get(position);
 
             hashtag.setText(puntoActual.getHashTag());
             comentario.setText(puntoActual.getComentario());
             latitud.setText(puntoActual.getLatitud());
             longitud.setText(puntoActual.getLongitud());
             distancia.setText(puntoActual.getDistancia());
+
+            alMapa.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                    intent.putExtra("punto", puntoActual);
+                    startActivity(intent);
+                }
+            });
 
             return row;
         }
