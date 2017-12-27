@@ -79,13 +79,13 @@ public class AgregarPunto extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                    loading.dismiss();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                    loading.dismiss();
                     }
                 }
         ){
@@ -94,13 +94,13 @@ public class AgregarPunto extends AppCompatActivity {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("reportes", String.valueOf(reporte));
-                params.put("usuario", elegido);
+                params.put("hashtag", elegido);
                 params.put("comentario", comentario.getText().toString());
                 //params.put("latitud", )
 
                 return params;
             }
         };
-
+        AppController.getInstance().addToRequestQueue(stringRequest);
     }
 }
