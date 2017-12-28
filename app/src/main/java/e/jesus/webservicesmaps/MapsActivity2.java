@@ -51,13 +51,13 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        ConsultarWebServices(0);
+        ConsultarWebServices();
     }
 
-    public void ConsultarWebServices(int idReporte){
+    public void ConsultarWebServices(){
         JsonObjectRequest request = new JsonObjectRequest(
                 com.android.volley.Request.Method.GET,
-                url + String.valueOf(idReporte),
+                url,
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -80,8 +80,6 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
                                 LatLng sydney = new LatLng(latitudD,longitudD );
                                 mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
                             }
-
-                            Log.d("Lista", puntos.get(3).getLatitud());
 
                         } catch (JSONException e) {
                             e.printStackTrace();

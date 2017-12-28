@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -37,18 +38,19 @@ public class MainActivity extends AppCompatActivity {
     ListView listaPuntos;
     Button irAgregar, vertodo;
     Spinner hashTagspinner;
-    String[] hashtag = {"#bache", "#semaforomal", "#fugadeagua", "#inseguridad"};
+    String[] hashtag = {"","#bache", "#semaforomal", "#fugadeagua", "#inseguridad"};
     ArrayAdapter adapter;
     String elegido = "";
+    ArrayList<Punto> busqueda;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        hashTagspinner = findViewById(R.id.busquedaHashTagSpinner);
         puntos = new ArrayList<>();
         listaPuntos = findViewById(R.id.listaPuntosLV);
+        busqueda = new ArrayList<>();
 
         irAgregar = findViewById(R.id.nuevaVentanaAgregarPuntoButton);
         irAgregar.setOnClickListener(new View.OnClickListener() {
@@ -68,38 +70,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, hashtag);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        hashTagspinner.setAdapter(adapter);
-        hashTagspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                elegido = hashtag[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                elegido = hashtag[0];
-            }
-        });
-
-
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ConsultarWebServices(0);
+        ConsultarWebServices();
     }
 
-    public void ConsultarWebServices(int idReporte){
+
+
+    public void ConsultarWebServices(){
         puntos.clear();
 
         JsonObjectRequest request = new JsonObjectRequest(
                 com.android.volley.Request.Method.GET,
-                url + String.valueOf(idReporte),
+                url,
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -116,13 +103,45 @@ public class MainActivity extends AppCompatActivity {
                                 String longitud = jsonObject.getString("longitud");
                                 String distancia = jsonObject.getString("distancia");
                                 puntos.add(new Punto(hashtag,comanetario,latitud,longitud, distancia));
+                                listaPuntos.setAdapter(new MyAdapter());
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                        listaPuntos.setAdapter(new MyAdapter());
+                        hashTagspinner = findViewById(R.id.busquedaHashTagSpinner);
+                        adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_item, hashtag);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        hashTagspinner.setAdapter(adapter);
+
+                        hashTagspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                elegido = hashtag[position];
+
+
+                                if(elegido.isEmpty()){
+                                    Toast.makeText(MainActivity.this, "Esta vashio carnal", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    for(Punto punto: puntos){
+                                        if((punto.getHashTag()).equals(elegido)){
+                                            busqueda.add(punto);
+                                        }
+                                    }
+                                    listaPuntos.setAdapter(new MyAdapter());
+                                }
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
+
+
                     }
 
                 },
