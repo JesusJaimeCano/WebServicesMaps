@@ -1,7 +1,10 @@
 package e.jesus.webservicesmaps;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -33,11 +37,30 @@ public class AgregarPunto extends AppCompatActivity {
     EditText comentario;
     Button nuevoComentario;
     int reporte = 0;
+    double latitud = 0.0, longitud = 0.0;
+
+    TextView latitudAhora , longitudAhora;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.agregar_punto);
+
+        //////////////////////////////////MAPAS///////////////////////
+
+        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 10);
+        latitudAhora = findViewById(R.id.latitudeAhora);
+        longitudAhora = findViewById(R.id.longitudAhora);
+
+        LocationManager mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Localizacion localizacion = new Localizacion();
+
+        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,localizacion);
+
+
+        //////////////////////////////////MAPAS///////////////////////
+
+
 
         hashTagspinner = findViewById(R.id.hashTagNuevoPunto);
         comentario = findViewById(R.id.comentarioNuevoPunto);
@@ -68,6 +91,32 @@ public class AgregarPunto extends AppCompatActivity {
 
     }
 
+    public class Localizacion implements LocationListener{
+
+        @Override
+        public void onLocationChanged(Location location) {
+            String text = "Mi ubicacion actual es: \n" + "Latitud " + location.getLatitude() + "\nLongitud" + location.getLongitude();
+            latitudAhora.setText(text);
+            latitud = location.getLatitude();
+            longitud = location.getLongitude();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    }
+
     public void SubirComentario(){
 
         final ProgressDialog loading = ProgressDialog.show(this, "Subiendo Punto", "Espere, no este chingando", false, false);
@@ -90,17 +139,23 @@ public class AgregarPunto extends AppCompatActivity {
                 }
         ){
             protected Map<String,String> getParams(){
-                Location location;
 
                 Map<String, String> params = new HashMap<>();
                 params.put("reportes", String.valueOf(reporte));
                 params.put("hashtag", elegido);
                 params.put("comentario", comentario.getText().toString());
-                //params.put("latitud", )
+                params.put("latitud", latitud+"");
+                params.put("latitud", longitud+"");
+
+
 
                 return params;
             }
         };
         AppController.getInstance().addToRequestQueue(stringRequest);
     }
+
+
+
+
 }

@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     String url = "http://alexchaps.com/bde/verReportes.php?longitud=-99.1732938&latitud=19.4137175";
     ArrayList<Punto> puntos;
     ListView listaPuntos;
-    Button irAgregar;
+    Button irAgregar, vertodo;
     Spinner hashTagspinner;
     String[] hashtag = {"#bache", "#semaforomal", "#fugadeagua", "#inseguridad"};
     ArrayAdapter adapter;
@@ -55,6 +55,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AgregarPunto.class);
+                startActivity(intent);
+            }
+        });
+        vertodo= findViewById(R.id.verTodoButton);
+
+        vertodo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MapsActivity2.class);
                 startActivity(intent);
             }
         });

@@ -19,5 +19,16 @@
         android:layout_height="wrap_content"
         android:text="Agregar"
         android:id="@+id/nuevoPuntoButton"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Latitud"
+        android:id="@+id/latitudeAhora"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Longitud"
+        android:id="@+id/longitudAhora"/>
+
 
 </LinearLayout>
