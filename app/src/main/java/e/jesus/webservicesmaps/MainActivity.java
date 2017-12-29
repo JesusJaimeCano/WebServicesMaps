@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     String[] hashtag = {"","#bache", "#semaforomal", "#fugadeagua", "#inseguridad"};
     ArrayAdapter adapter;
     String elegido = "";
-    ArrayList<Punto> busqueda;
+    ArrayList<Punto> busqueda, respaldo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         puntos = new ArrayList<>();
+        respaldo = new ArrayList<>();
         listaPuntos = findViewById(R.id.listaPuntosLV);
         busqueda = new ArrayList<>();
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(final JSONObject response) {
                         Log.d("Respuesta sin limpiar", response.toString());
                         try {
                             JSONArray jsonArray = response.getJSONArray("reportes");
@@ -103,12 +104,14 @@ public class MainActivity extends AppCompatActivity {
                                 String longitud = jsonObject.getString("longitud");
                                 String distancia = jsonObject.getString("distancia");
                                 puntos.add(new Punto(hashtag,comanetario,latitud,longitud, distancia));
-                                listaPuntos.setAdapter(new MyAdapter());
+
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+                        //listaPuntos.setAdapter(new MyAdapter());
 
                         hashTagspinner = findViewById(R.id.busquedaHashTagSpinner);
                         adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_item, hashtag);
@@ -119,19 +122,23 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 elegido = hashtag[position];
-
+                                respaldo.addAll(puntos);
 
                                 if(elegido.isEmpty()){
                                     Toast.makeText(MainActivity.this, "Esta vashio carnal", Toast.LENGTH_SHORT).show();
+                                    puntos.clear();
+                                    puntos.addAll(respaldo);
+                                    listaPuntos.setAdapter(new MyAdapter());
                                 }else{
                                     for(Punto punto: puntos){
                                         if((punto.getHashTag()).equals(elegido)){
                                             busqueda.add(punto);
                                         }
                                     }
-                                    listaPuntos.setAdapter(new MyAdapter());
+                                    puntos.clear();
+                                    puntos.addAll(busqueda);
                                 }
-
+                                listaPuntos.setAdapter(new MyAdapter());
                             }
 
                             @Override
